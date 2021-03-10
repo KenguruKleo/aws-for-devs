@@ -1,0 +1,43 @@
+Parameters:
+  KeyName:
+    Description: The EC2 Key Pair to allow SSH access to the instance
+    Type: 'AWS::EC2::KeyPair::KeyName'
+  InstanceType:
+    Description: 'EC2 instance type'
+    Type: 'String'
+    Default: 't2.micro'
+    AllowedValues:
+      - t2.micro
+      - t3.micro
+Mappings:
+  RegionMap:
+    us-west-1:
+      AMI: 'ami-7a11e213'
+    us-west-2:
+      AMI: 'ami-40d1f038'
+Resources:
+  FirstEc2Instance:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      SecurityGroups:
+        - !Ref InstanceSecurityGroup
+      KeyName: !Ref KeyName
+      InstanceType: !Ref InstanceType
+      ImageId: !FindInMap 
+        - RegionMap
+        - !Ref 'AWS::Region'
+        - AMI
+  InstanceSecurityGroup:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupDescription: Enable SSH access via port 22
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+Outputs:
+  PublicIp:
+    Value: !GetAtt 
+      - FirstEc2Instance
+      - PublicIp
