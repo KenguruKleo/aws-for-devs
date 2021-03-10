@@ -33,3 +33,7 @@
     ```
     ssh -i aws-lohika-key-pair.pem ec2-user@34.220.117.59
     ```
+- Delete stack:
+    ```
+    aws cloudformation delete-stack --stack-name stack-week-0
+    ```
