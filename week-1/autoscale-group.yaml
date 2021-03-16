@@ -1,0 +1,45 @@
+Parameters:
+  KeyName:
+    Description: The EC2 Key Pair to allow SSH access to the instance
+    Type: 'AWS::EC2::KeyPair::KeyName'
+  InstanceType:
+    Description: 'EC2 instance type'
+    Type: 'String'
+    Default: 't2.micro'
+    AllowedValues:
+      - t2.micro
+      - t3.micro
+Resources:
+  myLaunchConfig:
+    Type: 'AWS::AutoScaling::LaunchConfiguration'
+    Properties:
+      InstanceType: !Ref InstanceType
+      ImageId: ami-00f9f4069d04c0c6e
+      SecurityGroups:
+        - !Ref ASGSecurityGroup
+      KeyName: !Ref KeyName
+      UserData: !Base64 |
+        #!/bin/bash -x
+        sudo yum install -y java-1.8.0-openjdk
+  ASGSecurityGroup:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupDescription: Enable SSH access via port 22
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+  myASG:
+    Type: AWS::AutoScaling::AutoScalingGroup
+    Properties:
+      MinSize: '0'
+      MaxSize: '3'
+      DesiredCapacity: '2'
+      LaunchConfigurationName:
+        Ref: 'myLaunchConfig'
+      AvailabilityZones: !GetAZs ""
