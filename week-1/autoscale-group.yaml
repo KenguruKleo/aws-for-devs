@@ -12,15 +12,23 @@ Parameters:
 Resources:
   myLaunchConfig:
     Type: 'AWS::AutoScaling::LaunchConfiguration'
+    Metadata:
+      AWS::CloudFormation::Init:
+        config:
+          packages:
+            yum:
+              java-1.8.0-openjdk: []
     Properties:
       InstanceType: !Ref InstanceType
       ImageId: ami-00f9f4069d04c0c6e
       SecurityGroups:
         - !Ref ASGSecurityGroup
       KeyName: !Ref KeyName
-      UserData: !Base64 |
-        #!/bin/bash -x
-        sudo yum install -y java-1.8.0-openjdk
+      UserData:
+        Fn::Base64:
+          !Sub |
+            #!/bin/bash -xe
+            /opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource myLaunchConfig --region ${AWS::Region}
   ASGSecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'
     Properties:
@@ -39,7 +47,7 @@ Resources:
     Properties:
       MinSize: '0'
       MaxSize: '3'
-      DesiredCapacity: '2'
+      DesiredCapacity: '1'
       LaunchConfigurationName:
         Ref: 'myLaunchConfig'
       AvailabilityZones: !GetAZs ""
