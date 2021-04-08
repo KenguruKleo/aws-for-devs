@@ -1,3 +1,5 @@
 .DS_Store
 test-s3.txt
 logs.log
+.terraform
+.terraform.lock.hcl

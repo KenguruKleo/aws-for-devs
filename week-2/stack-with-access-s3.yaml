@@ -31,7 +31,7 @@ Resources:
     DependsOn:
       - Ec2Instance
     Properties:
-      PolicyName: SFTPGatewayInstancePolicy
+      PolicyName: InstancePolicy
       PolicyDocument:
         Statement:
           - Effect: Allow
