@@ -1,6 +1,4 @@
-/*====
-The VPC
-======*/
+/*==== The VPC ======*/
 
 resource "aws_vpc" "vpc" {
   cidr_block           = var.vpc_cidr
@@ -25,23 +23,23 @@ resource "aws_internet_gateway" "ig" {
   }
 }
 
-/* Elastic IP for NAT */
-resource "aws_eip" "nat_eip" {
-  vpc        = true
-  depends_on = [aws_internet_gateway.ig]
-}
+# /* Elastic IP for NAT */
+# resource "aws_eip" "nat_eip" {
+#   vpc        = true
+#   depends_on = [aws_internet_gateway.ig]
+# }
 
-/* NAT */
-resource "aws_nat_gateway" "nat" {
-  allocation_id = aws_eip.nat_eip.id
-  subnet_id     = element(aws_subnet.public_subnet.*.id, 0)
-  depends_on    = [aws_internet_gateway.ig]
+# /* NAT */
+# resource "aws_nat_gateway" "nat" {
+#   allocation_id = aws_eip.nat_eip.id
+#   subnet_id     = element(aws_subnet.public_subnet.*.id, 0)
+#   depends_on    = [aws_internet_gateway.ig]
 
-  tags = {
-    Name        = "nat"
-    Environment = var.environment
-  }
-}
+#   tags = {
+#     Name        = "nat"
+#     Environment = var.environment
+#   }
+# }
 
 /* Public subnet */
 resource "aws_subnet" "public_subnet" {
@@ -97,11 +95,11 @@ resource "aws_route" "public_internet_gateway" {
   gateway_id             = aws_internet_gateway.ig.id
 }
 
-resource "aws_route" "private_nat_gateway" {
-  route_table_id         = aws_route_table.private.id
-  destination_cidr_block = "0.0.0.0/0"
-  nat_gateway_id         = aws_nat_gateway.nat.id
-}
+# resource "aws_route" "private_nat_gateway" {
+#   route_table_id         = aws_route_table.private.id
+#   destination_cidr_block = "0.0.0.0/0"
+#   nat_gateway_id         = aws_nat_gateway.nat.id
+# }
 
 /* Route table associations */
 resource "aws_route_table_association" "public" {
@@ -110,15 +108,13 @@ resource "aws_route_table_association" "public" {
   route_table_id = aws_route_table.public.id
 }
 
-resource "aws_route_table_association" "private" {
-  count          = length(var.private_subnets_cidr)
-  subnet_id      = element(aws_subnet.private_subnet.*.id, count.index)
-  route_table_id = aws_route_table.private.id
-}
+# resource "aws_route_table_association" "private" {
+#   count          = length(var.private_subnets_cidr)
+#   subnet_id      = element(aws_subnet.private_subnet.*.id, count.index)
+#   route_table_id = aws_route_table.private.id
+# }
 
-/*====
-VPC's Default Security Group
-======*/
+/*==== VPC's Default Security Group ======*/
 resource "aws_security_group" "default" {
   name        = "${var.environment}-default-sg"
   description = "Default security group to allow inbound/outbound from the VPC"

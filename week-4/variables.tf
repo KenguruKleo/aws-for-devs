@@ -20,3 +20,7 @@ variable "private_subnets_cidr" {
   type        = list
   description = "The CIDR block for the private subnet"
 }
+
+variable "key_name" {
+  description = "SSH key name"
+}
