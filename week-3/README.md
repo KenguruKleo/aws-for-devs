@@ -1,7 +1,7 @@
 ## Week 3
 
 ```
-bash ./rds-script.sql.sh >> logs.log
+bash ./init-s3.sh
 ```
 
 ### Terraform
