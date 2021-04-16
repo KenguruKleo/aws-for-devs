@@ -25,5 +25,6 @@ module "ec2_instances" {
   region               = var.region
   key_name             = var.key_name
   public_subnets_id    = module.networking.public_subnets_id
+  private_subnets_id   = module.networking.private_subnets_id
   vpc_id               = module.networking.vpc_id
 }

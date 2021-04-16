@@ -23,23 +23,23 @@ resource "aws_internet_gateway" "ig" {
   }
 }
 
+module "nat" {
+  source = "int128/nat-instance/aws"
+
+  name                        = "main"
+  vpc_id                      = aws_vpc.vpc.id
+  public_subnet               = element(aws_subnet.public_subnet.*.id, 0)
+  private_subnets_cidr_blocks = var.private_subnets_cidr
+  private_route_table_ids     = aws_route_table.private.*.id
+}
+
 # /* Elastic IP for NAT */
-# resource "aws_eip" "nat_eip" {
-#   vpc        = true
-#   depends_on = [aws_internet_gateway.ig]
-# }
-
-# /* NAT */
-# resource "aws_nat_gateway" "nat" {
-#   allocation_id = aws_eip.nat_eip.id
-#   subnet_id     = element(aws_subnet.public_subnet.*.id, 0)
-#   depends_on    = [aws_internet_gateway.ig]
-
-#   tags = {
-#     Name        = "nat"
-#     Environment = var.environment
-#   }
-# }
+resource "aws_eip" "nat" {
+  network_interface = module.nat.eni_id
+  tags = {
+    "Name" = "nat-instance-main"
+  }
+}
 
 /* Public subnet */
 resource "aws_subnet" "public_subnet" {
@@ -95,12 +95,6 @@ resource "aws_route" "public_internet_gateway" {
   gateway_id             = aws_internet_gateway.ig.id
 }
 
-# resource "aws_route" "private_nat_gateway" {
-#   route_table_id         = aws_route_table.private.id
-#   destination_cidr_block = "0.0.0.0/0"
-#   nat_gateway_id         = aws_nat_gateway.nat.id
-# }
-
 /* Route table associations */
 resource "aws_route_table_association" "public" {
   count          = length(var.public_subnets_cidr)
@@ -108,11 +102,11 @@ resource "aws_route_table_association" "public" {
   route_table_id = aws_route_table.public.id
 }
 
-# resource "aws_route_table_association" "private" {
-#   count          = length(var.private_subnets_cidr)
-#   subnet_id      = element(aws_subnet.private_subnet.*.id, count.index)
-#   route_table_id = aws_route_table.private.id
-# }
+resource "aws_route_table_association" "private" {
+  count          = length(var.private_subnets_cidr)
+  subnet_id      = element(aws_subnet.private_subnet.*.id, count.index)
+  route_table_id = aws_route_table.private.id
+}
 
 /*==== VPC's Default Security Group ======*/
 resource "aws_security_group" "default" {
