@@ -12,6 +12,24 @@ resource "aws_instance" "PublicInstance" {
       aws_security_group.allow_all_outbound.id
   ]
 
+  user_data     = <<-EOT
+    #cloud-config
+    write_files:
+    - content: |
+        <!DOCTYPE html>
+        <html>
+        <body>
+          <h2>Public instance</h2>
+        </body>
+        </html>
+      path: /usr/share/app/index.html
+      permissions: '0644'
+    runcmd:
+    - sudo amazon-linux-extras install nginx1 -y
+    - cp /usr/share/app/index.html /usr/share/nginx/html/index.html
+    - sudo nginx
+  EOT
+
   tags = {
     Name = "public"
   }
@@ -30,6 +48,24 @@ resource "aws_instance" "PrivateInstance" {
       aws_security_group.allow_PostgreSQL.id,
       aws_security_group.allow_all_outbound.id
   ]
+
+  user_data     = <<-EOT
+    #cloud-config
+    write_files:
+    - content: |
+        <!DOCTYPE html>
+        <html>
+        <body>
+          <h2>Private instance</h2>
+        </body>
+        </html>
+      path: /usr/share/app/index.html
+      permissions: '0644'
+    runcmd:
+    - sudo amazon-linux-extras install nginx1 -y
+    - cp /usr/share/app/index.html /usr/share/nginx/html/index.html
+    - sudo nginx
+  EOT
 
   tags = {
     Name = "private"
