@@ -1,3 +1,3 @@
-output "all_instances_ids" {
-  value = concat(module.ec2_instances.public_instances_ids, module.ec2_instances.private_instances_ids)
+output "elb_dns_name" {
+  value = module.elb_http.this_elb_dns_name
 }
