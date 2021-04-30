@@ -16,3 +16,8 @@ aws sqs send-message --queue-url https://sqs.us-west-2.amazonaws.com/21406654022
 ```
 aws sqs receive-message --queue-url https://sqs.us-west-2.amazonaws.com/214066540222/terraform-example-queue
 ```
+
+### Send notification
+```
+aws sns publish --topic-arn "arn:aws:sns:us-west-2:214066540222:user-updates-topic" --message "hello world 123" --region us-west-2
+```

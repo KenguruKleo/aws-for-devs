@@ -132,6 +132,20 @@ resource "aws_iam_role_policy" "InstancePolicy" {
           "dynamodb:DeleteItem"
         ],
         "Resource": "arn:aws:dynamodb:*:*:table/aws_course_table_01"
+      },
+      {
+        "Effect": "Allow",
+        "Action": [
+          "sqs:*"
+        ],
+        "Resource": "${aws_sqs_queue.terraform_queue.arn}"
+      },
+      {
+        "Effect": "Allow",
+        "Action": [
+          "sns:*"
+        ],
+        "Resource": "${aws_sns_topic.user_updates.arn}"
       }
     ]
   })
@@ -143,11 +157,11 @@ resource "aws_iam_instance_profile" "RootInstanceProfile" {
 }
 
 resource "aws_sqs_queue" "terraform_queue" {
-  name                        = "terraform-example-queue"
+  name = "terraform-example-queue"
 }
 
 resource "aws_sns_topic" "user_updates" {
-  name                        = "user-updates-topic"
+  name = "user-updates-topic"
 }
 
 output "instance_public_ip" {
