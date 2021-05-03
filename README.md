@@ -11,3 +11,5 @@
 [Week 4 ReadMe](./week-4/README.md)
 
 [Week 5 ReadMe](./week-5/README.md)
+
+[Week 6 ReadMe](./week-6/README.md)
