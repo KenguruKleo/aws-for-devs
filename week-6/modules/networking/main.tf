@@ -23,24 +23,6 @@ resource "aws_internet_gateway" "ig" {
   }
 }
 
-# module "nat" {
-#   source = "int128/nat-instance/aws"
-
-#   name                        = "main"
-#   vpc_id                      = aws_vpc.vpc.id
-#   public_subnet               = element(aws_subnet.public_subnet.*.id, 0)
-#   private_subnets_cidr_blocks = var.private_subnets_cidr
-#   private_route_table_ids     = aws_route_table.private.*.id
-# }
-
-# # /* Elastic IP for NAT */
-# resource "aws_eip" "nat" {
-#   network_interface = module.nat.eni_id
-#   tags = {
-#     "Name" = "nat-instance-main"
-#   }
-# }
-
 // aws --region eu-west-1 ec2 describe-images --owners amazon --filters Name="name",Values="amzn-ami-vpc-nat*"
 data "aws_ami" "nat" {
   most_recent = true
@@ -68,26 +50,6 @@ resource "aws_instance" "NAT_Instance" {
     Name = "NAT"
   }
 }
-
-# # allow internet access to Application nodes through nat #1
-# resource "aws_route_table" "route_table_nat" {
-#   vpc_id = aws_vpc.vpc.id
-
-#   route {
-#     cidr_block  = "0.0.0.0/0"
-#     instance_id = aws_instance.NAT_Instance.id
-
-#   }
-# }
-# resource "aws_route_table_association" "subnet_to_nat_instance" {
-#   route_table_id = aws_route_table.route_table_nat.id
-
-#   subnet_id      = aws_subnet.private_subnet.id
-
-# }
-
-
-
 
 /* Public subnet */
 resource "aws_subnet" "public_subnet" {
@@ -171,7 +133,7 @@ resource "aws_security_group_rule" "allow_inbound_traffic" {
   to_port = 65535
   protocol = "all"
   cidr_blocks = var.private_subnets_cidr
-  
+
   security_group_id = aws_security_group.access_via_nat.id
 
 }

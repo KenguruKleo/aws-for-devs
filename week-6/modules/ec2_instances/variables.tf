@@ -11,3 +11,5 @@ variable "public_subnets_id" {}
 variable "private_subnets_id" {}
 
 variable "vpc_id" {}
+
+variable "profile" {}

@@ -19,6 +19,13 @@ module "networking" {
   private_subnets_cidr = var.private_subnets_cidr
   availability_zones   = local.production_availability_zones
 }
+module "db" {
+  source = "./modules/db"
+}
+
+module "policy" {
+  source = "./modules/policy"
+}
 
 module "ec2_instances" {
   source = "./modules/ec2_instances"
@@ -28,6 +35,7 @@ module "ec2_instances" {
   public_subnets_id    = module.networking.public_subnets_id
   private_subnets_id   = module.networking.private_subnets_id
   vpc_id               = module.networking.vpc_id
+  profile              = module.policy.profile
 }
 
 resource "aws_security_group" "elb_http" {
@@ -87,7 +95,8 @@ module "elb_http" {
   }
 
   number_of_instances   = 2
-  instances             = concat(module.ec2_instances.public_instances_ids, module.ec2_instances.private_instances_ids)
+  instances             = module.ec2_instances.public_instances_ids
+
   cross_zone_load_balancing   = true
-  idle_timeout                = 5
+  idle_timeout                = 15
 }

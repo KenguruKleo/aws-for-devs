@@ -5,6 +5,8 @@ resource "aws_instance" "PublicInstance" {
   count         = 1
   subnet_id     = var.public_subnets_id
 
+  iam_instance_profile = var.profile
+
   vpc_security_group_ids = [
       aws_security_group.allow_ssh.id,
       aws_security_group.allow_http.id,
@@ -14,20 +16,8 @@ resource "aws_instance" "PublicInstance" {
 
   user_data     = <<-EOT
     #cloud-config
-    write_files:
-    - content: |
-        <!DOCTYPE html>
-        <html>
-        <body>
-          <h2>Public instance</h2>
-        </body>
-        </html>
-      path: /usr/share/app/index.html
-      permissions: '0644'
     runcmd:
-    - sudo amazon-linux-extras install nginx1 -y
-    - cp /usr/share/app/index.html /usr/share/nginx/html/index.html
-    - sudo nginx
+    - sudo yum install -y java-1.8.0-openjdk
   EOT
 
   tags = {
@@ -42,6 +32,8 @@ resource "aws_instance" "PrivateInstance" {
   count         = 1
   subnet_id     = var.private_subnets_id
 
+  iam_instance_profile = var.profile
+
   vpc_security_group_ids = [
       aws_security_group.allow_ssh.id,
       aws_security_group.allow_http.id,
@@ -51,20 +43,8 @@ resource "aws_instance" "PrivateInstance" {
 
   user_data     = <<-EOT
     #cloud-config
-    write_files:
-    - content: |
-        <!DOCTYPE html>
-        <html>
-        <body>
-          <h2>Private instance</h2>
-        </body>
-        </html>
-      path: /usr/share/app/index.html
-      permissions: '0644'
     runcmd:
-    - sudo amazon-linux-extras install nginx1 -y
-    - cp /usr/share/app/index.html /usr/share/nginx/html/index.html
-    - sudo nginx
+    - sudo yum install -y java-1.8.0-openjdk
   EOT
 
   tags = {
