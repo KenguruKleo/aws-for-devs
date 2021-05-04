@@ -74,8 +74,7 @@ module "elb_http" {
   name = "elb-example"
 
   subnets         = [
-    module.networking.public_subnets_id,
-    module.networking.private_subnets_id
+    module.networking.public_subnets_id
   ]
   security_groups = [
     aws_security_group.elb_http.id

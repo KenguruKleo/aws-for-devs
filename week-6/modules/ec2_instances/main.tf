@@ -2,7 +2,7 @@ resource "aws_instance" "PublicInstance" {
   ami           = "ami-00f9f4069d04c0c6e"
   instance_type = "t2.micro"
   key_name      = var.key_name
-  count         = 1
+  count         = 2
   subnet_id     = var.public_subnets_id
 
   iam_instance_profile = var.profile
