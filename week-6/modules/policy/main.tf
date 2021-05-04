@@ -52,6 +52,20 @@ resource "aws_iam_role_policy" "InstancePolicy" {
           "dynamodb:DeleteItem"
         ],
         "Resource": "arn:aws:dynamodb:*:*:table/aws_course_table_01"
+      },
+      {
+        "Effect": "Allow",
+        "Action": [
+          "sqs:*"
+        ],
+        "Resource": "${var.edu-lohika-training-aws-sqs-queue.arn}"
+      },
+      {
+        "Effect": "Allow",
+        "Action": [
+          "sns:*"
+        ],
+        "Resource": "${var.edu-lohika-training-aws-sns-topic.arn}"
       }
     ]
   })

@@ -22,11 +22,15 @@ module "networking" {
 module "db" {
   source = "./modules/db"
 }
-
+module "queue" {
+  source = "./modules/queue"
+}
 module "policy" {
   source = "./modules/policy"
-}
 
+  edu-lohika-training-aws-sqs-queue = module.queue.edu-lohika-training-aws-sqs-queue
+  edu-lohika-training-aws-sns-topic = module.queue.edu-lohika-training-aws-sns-topic
+}
 module "ec2_instances" {
   source = "./modules/ec2_instances"
   
