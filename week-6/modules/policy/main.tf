@@ -51,7 +51,7 @@ resource "aws_iam_role_policy" "InstancePolicy" {
           "dynamodb:PutItem",
           "dynamodb:DeleteItem"
         ],
-        "Resource": "arn:aws:dynamodb:*:*:table/aws_course_table_01"
+        "Resource": "arn:aws:dynamodb:*:*:table/edu-lohika-training-aws-dynamodb"
       },
       {
         "Effect": "Allow",

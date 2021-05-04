@@ -40,6 +40,7 @@ module "ec2_instances" {
   private_subnets_id   = module.networking.private_subnets_id
   vpc_id               = module.networking.vpc_id
   profile              = module.policy.profile
+  rds_host             = module.db.rds_host
 }
 
 resource "aws_security_group" "elb_http" {
@@ -91,7 +92,7 @@ module "elb_http" {
   ]
 
   health_check = {
-    target              = "HTTP:80/health"
+    target              = "HTTP:80/actuator/health"
     interval            = 10
     healthy_threshold   = 2
     unhealthy_threshold = 2

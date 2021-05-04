@@ -13,3 +13,5 @@ variable "private_subnets_id" {}
 variable "vpc_id" {}
 
 variable "profile" {}
+
+variable "rds_host" {}

@@ -18,6 +18,8 @@ resource "aws_instance" "PublicInstance" {
     #cloud-config
     runcmd:
     - sudo yum install -y java-1.8.0-openjdk
+    - aws s3 cp s3://kengurukleo-aws-for-dews/calc-2021-0.0.2-SNAPSHOT.jar /home/ec2-user/calc-2021-0.0.2-SNAPSHOT.jar
+    - java -jar /home/ec2-user/calc-2021-0.0.2-SNAPSHOT.jar
   EOT
 
   tags = {
@@ -45,6 +47,9 @@ resource "aws_instance" "PrivateInstance" {
     #cloud-config
     runcmd:
     - sudo yum install -y java-1.8.0-openjdk
+    - aws s3 cp s3://kengurukleo-aws-for-dews/persist3-2021-0.0.1-SNAPSHOT.jar /home/ec2-user/persist3-2021-0.0.1-SNAPSHOT.jar
+    - export RDS_HOST = ${var.rds_host}
+    - java -jar /home/ec2-user/persist3-2021-0.0.1-SNAPSHOT.jar
   EOT
 
   tags = {
