@@ -91,7 +91,7 @@ module "elb_http" {
   ]
 
   health_check = {
-    target              = "HTTP:80/"
+    target              = "HTTP:80/health"
     interval            = 10
     healthy_threshold   = 2
     unhealthy_threshold = 2
